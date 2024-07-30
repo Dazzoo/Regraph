@@ -8,7 +8,7 @@ export default function Regraph() {
   const ref = useRef<GraphCanvasRef | null>(null);
   const [nodes, setNodes] = useState(simpleNodes);
   const [edges, setEdges] = useState(simpleEdges);
-  const [numberOfNodesToAdd, setNumberOfNodesToAdd] = useState<number>(1);
+  const [numberOfNodesToAdd, setNumberOfNodesToAdd] = useState<number>(5);
   useEffect(() => {
     ref.current?.fitNodesInView();
   }, [nodes]);
@@ -29,6 +29,7 @@ export default function Regraph() {
       source: string;
       target: string;
       label: string;
+      size: number;
     }[] = [];
 
     countArray.forEach((element) => {
@@ -48,6 +49,7 @@ export default function Regraph() {
           source: newNodes.length > 1 ? newNodes[newNodes.length - 2].id : "",
           target: newNode.id,
           label: `Edge ${newNodes.length - 1}-${newNodes.length}`,
+          size: 1,
         };
         newEdges.push(newEdge);
       }
@@ -58,16 +60,47 @@ export default function Regraph() {
   };
 
   const removeNodes = () => {
-    setNodes(prevNodes => {
+    setNodes((prevNodes) => {
       const nodesToRemoveCount = Math.min(numberOfNodesToAdd, prevNodes.length);
-      const nodeIdsToRemove = prevNodes.slice(0, nodesToRemoveCount).map(node => node.id);
-  
-      setEdges(prevEdges => prevEdges.filter(edge => !nodeIdsToRemove.includes(edge.source) && !nodeIdsToRemove.includes(edge.target)));
-  
+      const nodeIdsToRemove = prevNodes
+        .slice(0, nodesToRemoveCount)
+        .map((node) => node.id);
+
+      setEdges((prevEdges) =>
+        prevEdges.filter(
+          (edge) =>
+            !nodeIdsToRemove.includes(edge.source) &&
+            !nodeIdsToRemove.includes(edge.target)
+        )
+      );
+
       return prevNodes.slice(nodesToRemoveCount);
     });
+  };
 
-  }
+  const addRandomSizeToEdges = () => {
+    setEdges((prevEdges) => {
+      const edgesToUpdateCount = Math.min(numberOfNodesToAdd, prevEdges.length);
+      const updatedEdges = [...prevEdges];
+
+      // Randomly select edges to update
+      const indicesToUpdate = new Set();
+      while (indicesToUpdate.size < edgesToUpdateCount) {
+        const randomIndex = Math.floor(Math.random() * prevEdges.length);
+        indicesToUpdate.add(randomIndex);
+      }
+
+      // Update the selected edges with a random size
+      indicesToUpdate.forEach((index) => {
+        updatedEdges[index as number] = {
+          ...updatedEdges[index as number],
+          size: Math.floor(Math.random() * 10) + 1,
+        };
+      });
+
+      return updatedEdges;
+    });
+  };
 
   return (
     <div>
@@ -85,7 +118,7 @@ export default function Regraph() {
           zIndex: 9,
           position: "absolute",
           top: 15,
-          right: 200,
+          right: 210,
           padding: 1,
         }}
       >
@@ -94,7 +127,7 @@ export default function Regraph() {
             htmlFor="email"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Number of nodes to add/remove
+            Number of nodes to be affected
           </label>
           <div className="mt-2">
             <input
@@ -102,7 +135,7 @@ export default function Regraph() {
               name="nodes"
               id="nodes"
               value={numberOfNodesToAdd}
-              placeholder="Number of nodes to add/remove"
+              placeholder="Number of nodes to be affected"
               onChange={(e) => setNumberOfNodesToAdd(parseInt(e.target.value))}
               className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -139,7 +172,100 @@ export default function Regraph() {
           Remove {numberOfNodesToAdd} Node(s)
         </button>
       </div>
-      <GraphCanvas ref={ref} nodes={nodes} edges={edges} />
+      <div
+        style={{
+          zIndex: 9,
+          position: "absolute",
+          top: 115,
+          right: 15,
+          background: "rgba(0, 0, 0, .5)",
+          padding: 1,
+          color: "white",
+        }}
+      >
+        <button
+          style={{
+            display: "block",
+            width: "100%",
+          }}
+          onClick={addRandomSizeToEdges}
+        >
+          Add Random Edges Size to {numberOfNodesToAdd} Edges
+        </button>
+      </div>
+      <GraphCanvas
+        renderNode={({ size, color, opacity }) => (
+          <group>
+            <mesh>
+              <boxGeometry attach="geometry" args={[size, 15, 125, 155]} />
+              <meshBasicMaterial
+                attach="material"
+                color={color}
+                opacity={opacity}
+                transparent
+              />
+            </mesh>
+          </group>
+        )}
+        theme={{
+          canvas: { background: "#fff" },
+          node: {
+            fill: "#7CA0AB",
+            activeFill: "#1DE9AC",
+            opacity: 1,
+            selectedOpacity: 1,
+            inactiveOpacity: 0.2,
+            label: {
+              color: "#2A6475",
+              stroke: "#fff",
+              activeColor: "#1DE9AC",
+            },
+            subLabel: {
+              color: "#ddd",
+              stroke: "transparent",
+              activeColor: "#1DE9AC",
+            },
+          },
+          lasso: {
+            border: "1px solid #55aaff",
+            background: "rgba(75, 160, 255, 0.1)",
+          },
+          ring: {
+            fill: "#D8E6EA",
+            activeFill: "#1DE9AC",
+          },
+          edge: {
+            fill: "#D8E6EA",
+            activeFill: "#1DE9AC",
+            opacity: 1,
+            selectedOpacity: 1,
+            inactiveOpacity: 0.1,
+            label: {
+              stroke: "#fff",
+              color: "#2A6475",
+              activeColor: "#1DE9AC",
+              fontSize: 6,
+            },
+          },
+          arrow: {
+            fill: "#D8E6EA",
+            activeFill: "#1DE9AC",
+          },
+          cluster: {
+            stroke: "#D8E6EA",
+            opacity: 1,
+            selectedOpacity: 1,
+            inactiveOpacity: 0.1,
+            label: {
+              stroke: "#fff",
+              color: "#2A6475",
+            },
+          },
+        }}
+        ref={ref}
+        nodes={nodes}
+        edges={edges}
+      />
     </div>
   );
 }
