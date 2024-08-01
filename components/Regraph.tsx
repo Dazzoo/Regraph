@@ -199,19 +199,23 @@ export default function Regraph() {
         </button>
       </div>
       <GraphCanvas
-        renderNode={({ size, color, opacity }) => (
-          <group>
-            <mesh>
-              <boxGeometry attach="geometry" args={[size, 15, 125, 155]} />
-              <meshBasicMaterial
-                attach="material"
-                color={color}
-                opacity={opacity}
-                transparent
-              />
-            </mesh>
-          </group>
-        )}
+        renderNode={(props) => {
+          console.log('props', props)
+          return (
+            <group>
+              <mesh>
+                <boxGeometry attach="geometry" args={[props.size, 15, 125, 155]} />
+                <meshBasicMaterial
+                  attach="material"
+                  color={props.color}
+                  opacity={props.opacity}
+                  transparent
+                />
+              </mesh>
+            </group>
+          )
+        }}
+        animated={true}
         theme={{
           canvas: { background: "#fff" },
           node: {
