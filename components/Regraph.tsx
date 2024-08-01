@@ -79,6 +79,7 @@ export default function Regraph() {
   };
 
   const addRandomSizeToEdges = () => {
+    console.log("edges-before", edges);
     setEdges((prevEdges) => {
       const edgesToUpdateCount = Math.min(numberOfNodesToAdd, prevEdges.length);
       const updatedEdges = [...prevEdges];
@@ -101,6 +102,10 @@ export default function Regraph() {
       return updatedEdges;
     });
   };
+
+  useEffect(() => {
+    console.log("edges-after", edges);
+  }, [edges])
 
   return (
     <div>
