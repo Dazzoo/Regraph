@@ -219,7 +219,7 @@ export default function Regraph() {
         theme={{
           canvas: { background: "#fff" },
           node: {
-            fill: "#7CA0AB",
+            fill: "#3b82f6",
             activeFill: "#1DE9AC",
             opacity: 1,
             selectedOpacity: 1,
@@ -244,7 +244,7 @@ export default function Regraph() {
             activeFill: "#1DE9AC",
           },
           edge: {
-            fill: "#D8E6EA",
+            fill: "#1e40af",
             activeFill: "#1DE9AC",
             opacity: 1,
             selectedOpacity: 1,
@@ -257,7 +257,7 @@ export default function Regraph() {
             },
           },
           arrow: {
-            fill: "#D8E6EA",
+            fill: "#1e40af",
             activeFill: "#1DE9AC",
           },
           cluster: {
