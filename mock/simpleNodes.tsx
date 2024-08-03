@@ -24,8 +24,9 @@ const simpleNodes = [
       "id": "n-3",
       "label": "Node 3",
       "data": {
-        "priority": 3
-      }
+        "priority": 3,
+        "color": "#f43f5e"
+      },
     },
     {
       "id": "n-4",

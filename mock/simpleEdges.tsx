@@ -18,7 +18,8 @@ const simpleEdges = [
     source: "n-0",
     target: "n-3",
     label: "Edge 0-3",
-    size: 1
+    size: 1,
+    color: 'red'
   },
   {
     id: "0->4",
@@ -26,6 +27,7 @@ const simpleEdges = [
     target: "n-4",
     label: "Edge 0-4",
     size: 1,
+    color: 'red'
   },
 ];
 

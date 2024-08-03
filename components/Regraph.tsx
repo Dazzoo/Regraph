@@ -11,7 +11,13 @@ export default function Regraph() {
   const [numberOfNodesToAdd, setNumberOfNodesToAdd] = useState<number>(5);
   useEffect(() => {
     ref.current?.fitNodesInView();
-  }, [nodes]);
+  }, [nodes, edges]);
+
+
+  useEffect(() => {
+    console.log('ref', ref.current?.getGraph())
+
+  }, [ref.current])
 
   const addNodes = () => {
     const countArray = Array.from(
@@ -105,7 +111,7 @@ export default function Regraph() {
 
   useEffect(() => {
     console.log("edges-after", edges);
-  }, [edges])
+  }, [edges]);
 
   return (
     <div>
@@ -201,76 +207,20 @@ export default function Regraph() {
       <GraphCanvas
         renderNode={(props) => {
           console.log('props', props)
+          console.log('props.color',props.node.data.color);
           return (
             <group>
-              <mesh>
-                <boxGeometry attach="geometry" args={[props.size, 15, 125, 155]} />
-                <meshBasicMaterial
-                  attach="material"
-                  color={props.color}
-                  opacity={props.opacity}
-                  transparent
-                />
-              </mesh>
-            </group>
+            <mesh scale={false ? 1.5 : 1}>
+              <circleGeometry args={[10, 25, 0]} />
+              <meshStandardMaterial color={props.node.data.color ? props.node.data.color : "orange"} />
+            </mesh>
+          </group>
           )
-        }}
+        }
+
+        }
         animated={true}
-        theme={{
-          canvas: { background: "#fff" },
-          node: {
-            fill: "#3b82f6",
-            activeFill: "#1DE9AC",
-            opacity: 1,
-            selectedOpacity: 1,
-            inactiveOpacity: 0.2,
-            label: {
-              color: "#2A6475",
-              stroke: "#fff",
-              activeColor: "#1DE9AC",
-            },
-            subLabel: {
-              color: "#ddd",
-              stroke: "transparent",
-              activeColor: "#1DE9AC",
-            },
-          },
-          lasso: {
-            border: "1px solid #55aaff",
-            background: "rgba(75, 160, 255, 0.1)",
-          },
-          ring: {
-            fill: "#D8E6EA",
-            activeFill: "#1DE9AC",
-          },
-          edge: {
-            fill: "#1e40af",
-            activeFill: "#1DE9AC",
-            opacity: 1,
-            selectedOpacity: 1,
-            inactiveOpacity: 0.1,
-            label: {
-              stroke: "#fff",
-              color: "#2A6475",
-              activeColor: "#1DE9AC",
-              fontSize: 6,
-            },
-          },
-          arrow: {
-            fill: "#1e40af",
-            activeFill: "#1DE9AC",
-          },
-          cluster: {
-            stroke: "#D8E6EA",
-            opacity: 1,
-            selectedOpacity: 1,
-            inactiveOpacity: 0.1,
-            label: {
-              stroke: "#fff",
-              color: "#2A6475",
-            },
-          },
-        }}
+        edgeInterpolation="curved"
         ref={ref}
         nodes={nodes}
         edges={edges}
